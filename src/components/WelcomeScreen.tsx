@@ -5,10 +5,10 @@ interface WelcomeScreenProps {
 }
 
 const sampleQuestions = [
-  "What is the meaning of 'Bismillah' and its significance?",
-  "How does the Qur'an describe patience (Sabr)?",
-  "What are the pillars of Islam according to the Qur'an?",
-  "Explain the concept of Tawakkul (trust in Allah).",
+  "'Bismillah'ın anlamı ve önemi nedir?",
+  "Kur'an sabır (Sabr) kavramını nasıl açıklar?",
+  "Kur'an'a göre İslam'ın şartları nelerdir?",
+  "Tevekkül (Allah'a güven) kavramını açıklar mısın?",
 ];
 
 const WelcomeScreen = ({ onSampleQuestion }: WelcomeScreenProps) => {
@@ -25,7 +25,7 @@ const WelcomeScreen = ({ onSampleQuestion }: WelcomeScreenProps) => {
           Tefsir<span className="text-gradient-gold">Bot</span>
         </h1>
         <p className="text-muted-foreground text-lg max-w-md mx-auto leading-relaxed">
-          Your AI companion for exploring Islamic knowledge through reliable Tafsir and Qur'anic sources
+          Güvenilir tefsir ve Kur'an kaynaklarından İslami bilgileri keşfetmeniz için AI asistanınız
         </p>
       </div>
 
@@ -33,22 +33,22 @@ const WelcomeScreen = ({ onSampleQuestion }: WelcomeScreenProps) => {
       <div className="flex flex-wrap justify-center gap-6 mb-12">
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <Sparkles className="w-4 h-4 text-gold" />
-          <span>Simplified explanations</span>
+          <span>Sade açıklamalar</span>
         </div>
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <BookOpen className="w-4 h-4 text-gold" />
-          <span>Reliable sources</span>
+          <span>Güvenilir kaynaklar</span>
         </div>
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <MessageCircle className="w-4 h-4 text-gold" />
-          <span>Clear answers</span>
+          <span>Net cevaplar</span>
         </div>
       </div>
 
       {/* Sample Questions */}
       <div className="w-full max-w-2xl">
         <p className="text-sm text-muted-foreground text-center mb-4">
-          Try asking about:
+          Şunları sorabilirsiniz:
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {sampleQuestions.map((question, index) => (

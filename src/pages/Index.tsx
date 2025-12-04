@@ -12,13 +12,13 @@ interface Message {
 
 // Simulated responses for demo (will be replaced with AI integration)
 const simulatedResponses: Record<string, string> = {
-  default: `Thank you for your question. Based on the Qur'anic sources and classical Tafsir interpretations, I can provide you with a comprehensive understanding.
+  default: `Sorunuz için teşekkür ederim. Kur'an kaynakları ve klasik tefsir yorumlarına dayanarak size kapsamlı bir anlayış sunabilirim.
 
-The Qur'an emphasizes the importance of seeking knowledge and understanding. As Allah says in Surah Al-Alaq (96:1-5): "Read in the name of your Lord who created..."
+Kur'an, bilgi ve anlayış aramanın önemini vurgular. Allah, Alak Suresi'nde (96:1-5) buyurur: "Yaratan Rabbinin adıyla oku..."
 
-This verse highlights the fundamental Islamic principle that knowledge and learning are acts of worship. The scholars of Tafsir, including Ibn Kathir and At-Tabari, have extensively discussed this topic.
+Bu ayet, bilgi ve öğrenmenin ibadetin temel bir İslami ilkesi olduğunu vurgular. İbn Kesir ve Taberi dahil tefsir alimleri bu konuyu kapsamlı bir şekilde tartışmışlardır.
 
-Would you like me to elaborate on any specific aspect of this topic?`,
+Bu konunun herhangi bir yönünü daha ayrıntılı açıklamamı ister misiniz?`,
 };
 
 const Index = () => {
@@ -88,7 +88,7 @@ const Index = () => {
         <div className="container max-w-4xl mx-auto px-4">
           <ChatInput onSend={handleSend} disabled={isLoading} />
           <p className="text-xs text-muted-foreground text-center mt-3">
-            TefsirBot provides information from reliable Islamic sources. Always verify with scholars for important matters.
+            TefsirBot güvenilir İslami kaynaklardan bilgi sunar. Önemli konular için her zaman alimlere danışın.
           </p>
         </div>
       </footer>

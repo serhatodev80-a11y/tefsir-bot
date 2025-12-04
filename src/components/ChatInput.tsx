@@ -33,7 +33,7 @@ const ChatInput = ({ onSend, disabled }: ChatInputProps) => {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder="Ask your question about Islam..."
+          placeholder="İslam hakkında sorunuzu yazın..."
           disabled={disabled}
           className="min-h-[60px] max-h-[200px] pr-14 resize-none border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 text-[15px] placeholder:text-muted-foreground/60"
           rows={1}
