@@ -3,6 +3,7 @@ import ChatHeader from "@/components/ChatHeader";
 import ChatMessage from "@/components/ChatMessage";
 import ChatInput from "@/components/ChatInput";
 import WelcomeScreen from "@/components/WelcomeScreen";
+import { toast } from "sonner";
 
 interface Message {
   id: string;
@@ -10,16 +11,7 @@ interface Message {
   content: string;
 }
 
-// Simulated responses for demo (will be replaced with AI integration)
-const simulatedResponses: Record<string, string> = {
-  default: `Sorunuz için teşekkür ederim. Kur'an kaynakları ve klasik tefsir yorumlarına dayanarak size kapsamlı bir anlayış sunabilirim.
-
-Kur'an, bilgi ve anlayış aramanın önemini vurgular. Allah, Alak Suresi'nde (96:1-5) buyurur: "Yaratan Rabbinin adıyla oku..."
-
-Bu ayet, bilgi ve öğrenmenin ibadetin temel bir İslami ilkesi olduğunu vurgular. İbn Kesir ve Taberi dahil tefsir alimleri bu konuyu kapsamlı bir şekilde tartışmışlardır.
-
-Bu konunun herhangi bir yönünü daha ayrıntılı açıklamamı ister misiniz?`,
-};
+const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/chat`;
 
 const Index = () => {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -44,16 +36,88 @@ const Index = () => {
     setMessages((prev) => [...prev, userMessage]);
     setIsLoading(true);
 
-    // Simulate AI response delay
-    setTimeout(() => {
-      const assistantMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        role: "assistant",
-        content: simulatedResponses.default,
-      };
-      setMessages((prev) => [...prev, assistantMessage]);
+    let assistantContent = "";
+
+    try {
+      const response = await fetch(CHAT_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+        },
+        body: JSON.stringify({
+          messages: [...messages, userMessage].map((m) => ({
+            role: m.role,
+            content: m.content,
+          })),
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Bir hata oluştu");
+      }
+
+      if (!response.body) {
+        throw new Error("Yanıt alınamadı");
+      }
+
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let textBuffer = "";
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        textBuffer += decoder.decode(value, { stream: true });
+
+        let newlineIndex: number;
+        while ((newlineIndex = textBuffer.indexOf("\n")) !== -1) {
+          let line = textBuffer.slice(0, newlineIndex);
+          textBuffer = textBuffer.slice(newlineIndex + 1);
+
+          if (line.endsWith("\r")) line = line.slice(0, -1);
+          if (line.startsWith(":") || line.trim() === "") continue;
+          if (!line.startsWith("data: ")) continue;
+
+          const jsonStr = line.slice(6).trim();
+          if (jsonStr === "[DONE]") break;
+
+          try {
+            const parsed = JSON.parse(jsonStr);
+            const delta = parsed.choices?.[0]?.delta?.content;
+            if (delta) {
+              assistantContent += delta;
+              setMessages((prev) => {
+                const last = prev[prev.length - 1];
+                if (last?.role === "assistant") {
+                  return prev.map((m, i) =>
+                    i === prev.length - 1 ? { ...m, content: assistantContent } : m
+                  );
+                }
+                return [
+                  ...prev,
+                  {
+                    id: (Date.now() + 1).toString(),
+                    role: "assistant",
+                    content: assistantContent,
+                  },
+                ];
+              });
+            }
+          } catch {
+            textBuffer = line + "\n" + textBuffer;
+            break;
+          }
+        }
+      }
+    } catch (error) {
+      console.error("Chat error:", error);
+      toast.error(error instanceof Error ? error.message : "Bir hata oluştu");
+    } finally {
       setIsLoading(false);
-    }, 1500);
+    }
   };
 
   const handleReset = () => {
@@ -76,7 +140,7 @@ const Index = () => {
                 content={message.content}
               />
             ))}
-            {isLoading && (
+            {isLoading && messages[messages.length - 1]?.role !== "assistant" && (
               <ChatMessage role="assistant" content="" isLoading />
             )}
             <div ref={messagesEndRef} />
