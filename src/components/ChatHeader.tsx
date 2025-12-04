@@ -32,7 +32,7 @@ const ChatHeader = ({ onReset, hasMessages }: ChatHeaderProps) => {
             className="text-muted-foreground hover:text-foreground gap-2"
           >
             <RotateCcw className="w-4 h-4" />
-            New Chat
+            Yeni Sohbet
           </Button>
         )}
       </div>
