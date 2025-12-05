@@ -11,14 +11,22 @@ serve(async (req) => {
   }
 
   try {
-    const { messages } = await req.json();
+    const { messages, responseLength } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     
     if (!LOVABLE_API_KEY) {
       throw new Error("LOVABLE_API_KEY is not configured");
     }
 
-    console.log("Received chat request with messages:", messages.length);
+    console.log("Received chat request with messages:", messages.length, "responseLength:", responseLength);
+
+    const responseLengthInstructions: Record<string, string> = {
+      short: "\n\nYANIT UZUNLUĞU: KISA ve ÖZ yanıtlar ver. Sadece en önemli bilgileri 2-3 cümle ile açıkla. Gereksiz detaylara girme.",
+      normal: "",
+      detailed: "\n\nYANIT UZUNLUĞU: DETAYLI ve KAPSAMLI yanıtlar ver. Konuyu derinlemesine açıkla, farklı görüşleri belirt, örnekler ver ve kaynakları detaylı şekilde paylaş."
+    };
+
+    const lengthInstruction = responseLengthInstructions[responseLength as string] ?? "";
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -57,7 +65,7 @@ Kuralların:
 - Bilmediğin konularda "Bu konuda kesin bilgim yok, bir alime danışmanızı öneririm" de
 - Kaynakları belirt (hangi tefsirden, hangi hadisten vb.)
 - Yanıtlarını açık ve anlaşılır tut
-- Markdown formatı kullan (başlıklar, listeler, kalın yazı vb.)`
+- Markdown formatı kullan (başlıklar, listeler, kalın yazı vb.)${lengthInstruction}`
           },
           ...messages,
         ],

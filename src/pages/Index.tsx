@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import ChatHeader from "@/components/ChatHeader";
 import ChatMessage from "@/components/ChatMessage";
-import ChatInput from "@/components/ChatInput";
+import ChatInput, { ResponseLength } from "@/components/ChatInput";
 import WelcomeScreen from "@/components/WelcomeScreen";
 import { toast } from "sonner";
 
@@ -26,7 +26,7 @@ const Index = () => {
     scrollToBottom();
   }, [messages]);
 
-  const handleSend = async (content: string) => {
+  const handleSend = async (content: string, responseLength: ResponseLength = "normal") => {
     const userMessage: Message = {
       id: Date.now().toString(),
       role: "user",
@@ -50,6 +50,7 @@ const Index = () => {
             role: m.role,
             content: m.content,
           })),
+          responseLength,
         }),
       });
 
@@ -130,7 +131,7 @@ const Index = () => {
 
       <main className="flex-1 container max-w-4xl mx-auto px-4 py-6 flex flex-col">
         {messages.length === 0 ? (
-          <WelcomeScreen onSampleQuestion={handleSend} />
+          <WelcomeScreen onSampleQuestion={(q) => handleSend(q, "normal")} />
         ) : (
           <div className="flex-1 space-y-6 pb-4">
             {messages.map((message) => (
