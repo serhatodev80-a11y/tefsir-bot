@@ -1,5 +1,13 @@
-import { BookOpen, RotateCcw } from "lucide-react";
+import { BookOpen, RotateCcw, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 interface ChatHeaderProps {
   onReset: () => void;
@@ -24,17 +32,57 @@ const ChatHeader = ({ onReset, hasMessages }: ChatHeaderProps) => {
           </div>
         </div>
 
-        {hasMessages && (
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={onReset}
-            className="text-muted-foreground hover:text-foreground gap-2"
-          >
-            <RotateCcw className="w-4 h-4" />
-            Yeni Sohbet
-          </Button>
-        )}
+        <div className="flex items-center gap-2">
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button
+                variant="outline"
+                size="sm"
+                className="gap-2 border-gold/30 text-gold hover:bg-gold/10 hover:text-gold"
+              >
+                <Heart className="w-4 h-4" />
+                Bağış Yap
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-md">
+              <DialogHeader>
+                <DialogTitle className="font-serif text-2xl flex items-center gap-2">
+                  <Heart className="w-6 h-6 text-gold" />
+                  Bağış Yap
+                </DialogTitle>
+                <DialogDescription className="text-base pt-2">
+                  TefsirBot'u desteklemek için bağışta bulunabilirsiniz.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4 pt-4">
+                <div className="bg-muted/50 rounded-lg p-4 space-y-3">
+                  <h4 className="font-semibold text-foreground">Banka Hesabı</h4>
+                  <div className="space-y-1 text-sm">
+                    <p><span className="text-muted-foreground">Banka:</span> Örnek Banka</p>
+                    <p><span className="text-muted-foreground">IBAN:</span> TR00 0000 0000 0000 0000 0000 00</p>
+                    <p><span className="text-muted-foreground">Hesap Sahibi:</span> TefsirBot Vakfı</p>
+                  </div>
+                </div>
+                <p className="text-xs text-muted-foreground text-center">
+                  Bağışlarınız TefsirBot'un geliştirilmesi ve sürdürülmesi için kullanılacaktır.
+                  Allah kabul etsin.
+                </p>
+              </div>
+            </DialogContent>
+          </Dialog>
+
+          {hasMessages && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onReset}
+              className="text-muted-foreground hover:text-foreground gap-2"
+            >
+              <RotateCcw className="w-4 h-4" />
+              Yeni Sohbet
+            </Button>
+          )}
+        </div>
       </div>
     </header>
   );
